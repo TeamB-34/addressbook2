@@ -25,22 +25,23 @@ tools {
          def scannerHome = tool 'SonarQube_Scanner-5.0.1';
          withSonarQubeEnv("sonar-integration") {
          sh "${tool("SonarQube_Scanner-5.0.1")}/bin/sonar-scanner -X \
-           -Dsonar.projectKey=adressbook-app \
-           -Dsonar.projectName='adressbook-app' \
-           -Dsonar.host.url=https://sonar.shiawslab.com \
-           -Dsonar.token=$SONAR_TOKEN \
-           -Dsonar.sources=src/main/java/ \
-           -Dsonar.java.binaries=target/classes"
+          mvn clean verify sonar:sonar \
+             -Dsonar.projectKey=Addressbook \
+             -Dsonar.projectName='Addressbook' \
+             -Dsonar.host.url=http://18.201.23.183:9000 \
+             -Dsonar.token=$SONAR_TOKEN \
+             -Dsonar.sources=src/main/java/ \
+             -Dsonar.java.binaries=target/classes"
           }
          }
        }
       }
       stage('4. Docker image build') {
          steps{
-          sh "aws ecr get-login-password --region us-west-2 | sudo docker login --username AWS --password-stdin ${params.aws_account}.dkr.ecr.us-west-2.amazonaws.com"
+          sh "aws ecr get-login-password --region eu-west-1 | sudo docker login --username AWS --password-stdin ${params.aws_account}.dkr.ecr.eu-west-1.amazonaws.com"
           sh "sudo docker build -t addressbook ."
-          sh "sudo docker tag addressbook:latest ${params.aws_account}.dkr.ecr.us-west-2.amazonaws.com/addressbook:${params.ecr_tag}"
-          sh "sudo docker push ${params.aws_account}.dkr.ecr.us-west-2.amazonaws.com/addressbook:${params.ecr_tag}"
+          sh "sudo docker tag addressbook:latest ${params.aws_account}.dkr.ecr.eu-west-1.amazonaws.com/addressbook:${params.ecr_tag}"
+          sh "sudo docker push ${params.aws_account}.dkr.ecr.eu-west-1.amazonaws.com/addressbook:${params.ecr_tag}"
          }
        }
       stage('5. Deployment into kubernetes cluster') {
@@ -53,8 +54,8 @@ tools {
 
       stage ('6. Email Notification') {
          steps{
-         mail bcc: 'fusisoft@gmail.com', body: '''Build is Over. Check the application using the URL below. 
-         https//abook.shiawslab.com/addressbook-1.0
+         mail bcc: 'opeyemidavies@gmail.com', body: '''Build is Over. Check the application using the URL below. 
+         http://54.171.49.113:8080/
          Let me know if the changes look okay.
          Thanks,
          Dominion System Technologies,
