@@ -3,12 +3,10 @@ kind: Service
 metadata:
   name: addressbook-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8080
-      targetPort: 8088
-      nodePort: 30100
   selector:
     app: addressbook
 
