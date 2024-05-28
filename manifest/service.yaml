@@ -4,14 +4,13 @@ metadata:
   name: addressbook-service
 spec:
  type: NodePort
-  selector:
-    app: addressbook
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
       nodePort: 30100
-  
+  selector:
+       app: addressbook
 
 #apiVersion: networking.k8s.io/v1
 # kind: Ingress
